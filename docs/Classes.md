@@ -1,0 +1,69 @@
+# Puppet Classes
+Puppet classes are defined as a collection of resources, which are grouped together in order to get a target node or machine in a desired state. These classes are defined inside Puppet manifest files which is located inside Puppet modules. The main purpose of using a class is to reduce the same code repetition inside any manifest file or any other Puppet code.
+
+  
+### A class with no parameters
+
+```
+class puppet_user{
+  user { 'puppet_user':
+       ensure => present,
+       uid => 1001,
+       home => '/home/puppet_user'
+       }
+}
+node default{
+  include puppet_user
+}
+
+```
+
+### A class with parameters
+```
+
+class puppet_user($username){
+  user { $username:
+       ensure => present,
+       uid => 1001,
+       home => '/home/$username'
+       }
+}
+
+#invoke the class
+node default{
+  class { puppet_user:
+     username => 'puppet_user',
+        }
+}
+```
+
+### Class example with if condition and multiple parameters
+```
+class user($username, $test) {
+
+     user { $username:
+            ensure => present,
+            managehome => true,
+          }
+     if $test =='testing' {
+          file { '/tmp/2.txt':
+           content => $test,
+          }
+        }
+     else
+    {
+         file { '/tmp/3.txt':
+           content => $test,
+          }
+
+    }
+}
+
+node default {
+       class { 'user':
+               username => 'raman',
+               test => 'notesting' ,
+             }
+
+}
+```
